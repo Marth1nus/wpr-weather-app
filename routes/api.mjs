@@ -1,16 +1,16 @@
-const express = require('express')
-const mongoose = require('mongoose')
-const assert = require('assert')
-const axios = require('axios')
+import express from 'express'
+import mongoose from 'mongoose'
+import assert from 'assert'
+import axios from 'axios'
+import enums from '../src/enums'
 
 /// Constants \\\
 
 const { OPEN_WEATHER_APIKEY, MONGODB_CONNECTION_STRING } = process.env
-const UNITS = { STANDARD: 'standard', METRIC: 'metric', IMPERIAL: 'imperial' }
 
 /// Database Setup \\\
 
-const db_connection = mongoose.connect(MONGODB_CONNECTION_STRING, {
+export const db_connection = mongoose.connect(MONGODB_CONNECTION_STRING, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
@@ -18,13 +18,14 @@ const db_connection = mongoose.connect(MONGODB_CONNECTION_STRING, {
 const preferences_schema = new mongoose.Schema({
   units: {
     type: String,
-    enum: Object.values(UNITS),
+    enum: Object.values(enums.UNITS),
   },
   cards: [String],
   language: String,
 })
 
 const users_schema = new mongoose.Schema({
+  authorization_string: String,
   email: {
     type: String,
     required: true,
@@ -73,11 +74,8 @@ function open_weather_one_call_get({
 }
 
 /// Routes \\\
-const router = express.Router()
+export const router = express.Router()
 
 router.get('/', function (req, res) {
   res.json(['Api not implemented'])
 })
-
-exports.api_routes = router
-exports.db_connection = db_connection

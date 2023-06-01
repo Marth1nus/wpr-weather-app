@@ -1,11 +1,13 @@
 const node_externals = require('webpack-node-externals')
 const path = require('path')
 
-const typical_react = {
+const public_folder = path.resolve(__dirname, 'public')
+
+const wpr_weather_module = {
   rules: [
     {
-      test: /\.js$/,
-      exclude: /(node_modules)/,
+      test: /\.m?js$/,
+      exclude: /node_modules/,
       use: {
         loader: 'babel-loader',
         options: {
@@ -19,15 +21,15 @@ const typical_react = {
 const client_config = {
   entry: './src/home.js',
   output: {
-    path: path.resolve(__dirname, 'public'),
+    path: public_folder,
     filename: 'home.js',
   },
-  mode: 'development',
-  module: typical_react,
+  mode: 'production',
+  module: wpr_weather_module,
 }
 
 const server_config = {
-  entry: './server.js',
+  entry: './server.mjs',
   output: {
     path: __dirname,
     filename: 'server-compiled.js',
@@ -35,7 +37,7 @@ const server_config = {
   externals: [node_externals()],
   target: 'node',
   mode: 'production',
-  module: typical_react,
+  module: wpr_weather_module,
 }
 
 module.exports = [client_config, server_config]

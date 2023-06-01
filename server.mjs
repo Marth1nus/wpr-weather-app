@@ -1,9 +1,9 @@
-const dotenv = require('dotenv')
+import dotenv from 'dotenv'
 dotenv.config()
 
-const express = require('express')
-const { top_routes } = require('./routes/top')
-const { api_routes, db_connection } = require('./routes/api')
+import express from 'express'
+import { top_routes } from './routes/top'
+import { api_routes, db_connection } from './routes/api'
 
 const { NODE_PORT } = process.env
 
