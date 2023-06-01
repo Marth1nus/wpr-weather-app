@@ -130,7 +130,14 @@ dist
 .pnp.*
 
 # npm and docker creted files
-data/
-node_modules/
+data
+node_modules
 package-lock.json
 .gitignore
+
+# compiled files
+server-compiled.js
+public/*.js
+
+# vscode workspace settings
+.vscode
