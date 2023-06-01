@@ -1,9 +1,9 @@
-import dotenv from 'dotenv'
+const dotenv = require('dotenv')
 dotenv.config()
 
-import express from 'express'
-import top_routes from './routes/top'
-import api_routes, { db_connection } from './routes/api'
+const express = require('express')
+const { top_routes } = require('./routes/top')
+const { api_routes, db_connection } = require('./routes/api')
 
 const { NODE_PORT } = process.env
 
@@ -18,5 +18,8 @@ app.use(express.urlencoded({ extended: false }))
 app.use('/', top_routes)
 app.use('/api', api_routes)
 
-await db_connection
-app.listen(NODE_PORT)
+async function main() {
+  await db_connection
+  app.listen(NODE_PORT)
+}
+main()

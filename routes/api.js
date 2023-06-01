@@ -1,7 +1,7 @@
-import express from 'express'
-import mongoose from 'mongoose'
-import assert from 'assert'
-import axios from 'axios'
+const express = require('express')
+const mongoose = require('mongoose')
+const assert = require('assert')
+const axios = require('axios')
 
 /// Constants \\\
 
@@ -10,7 +10,7 @@ const UNITS = { STANDARD: 'standard', METRIC: 'metric', IMPERIAL: 'imperial' }
 
 /// Database Setup \\\
 
-export const db_connection = mongoose.connect(MONGODB_CONNECTION_STRING, {
+const db_connection = mongoose.connect(MONGODB_CONNECTION_STRING, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
@@ -60,7 +60,6 @@ function open_weather_one_call_get({
   // TODO: implement caching for api calls. Consider node-cache.
   // Make sure it supports disk caching since the timeout is around 10 minutes
 
-  assert.ok()
   const base_url = 'https://api.openweathermap.org/data/3.0/'
   const options = {
     ...{ lat, lon, units, lang },
@@ -80,4 +79,5 @@ router.get('/', function (req, res) {
   res.json(['Api not implemented'])
 })
 
-export default router
+exports.api_routes = router
+exports.db_connection = db_connection

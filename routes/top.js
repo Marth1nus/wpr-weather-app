@@ -1,8 +1,9 @@
-import { Router } from 'express'
-const router = Router()
+const express = require('express')
+const { model } = require('mongoose')
+const router = express.Router()
 
 router.get('/', function (req, res) {
   res.render('home')
 })
 
-export default router
+exports.top_routes = router
