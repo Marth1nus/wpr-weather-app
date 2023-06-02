@@ -24,7 +24,7 @@ const client_config = {
     path: public_folder,
     filename: 'home.js',
   },
-  mode: 'production',
+  mode: 'development', // production
   module: wpr_weather_module,
 }
 
@@ -36,7 +36,7 @@ const server_config = {
   },
   externals: [node_externals()],
   target: 'node',
-  mode: 'production',
+  mode: 'development', // production
   module: wpr_weather_module,
 }
 

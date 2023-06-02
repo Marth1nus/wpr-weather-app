@@ -1,14 +1,12 @@
+import dotenv from 'dotenv'
+dotenv.config()
+
 import express from 'express'
 import mongoose from 'mongoose'
-import assert from 'assert'
-import axios from 'axios'
-import enums from '../src/enums'
+import { UNITS, LANGUAGES, LANGUAGE_CODES } from '../src/enums.mjs'
+import * as openweathermap from '../src/open-weather-map.mjs'
 
-/// Constants \\\
-
-const { OPEN_WEATHER_APIKEY, MONGODB_CONNECTION_STRING } = process.env
-
-/// Database Setup \\\
+const { MONGODB_CONNECTION_STRING } = process.env
 
 export const db_connection = mongoose.connect(MONGODB_CONNECTION_STRING, {
   useNewUrlParser: true,
@@ -18,7 +16,7 @@ export const db_connection = mongoose.connect(MONGODB_CONNECTION_STRING, {
 const preferences_schema = new mongoose.Schema({
   units: {
     type: String,
-    enum: Object.values(enums.UNITS),
+    enum: Object.values(UNITS),
   },
   cards: [String],
   language: String,
@@ -42,40 +40,15 @@ const users_schema = new mongoose.Schema({
 
 const users = mongoose.model('users', users_schema)
 
-/// Open Weather Setup \\\
-
-function build_url(base, title, args) {
-  const args_str = Object.entries(args)
-    .filter(([_, value]) => value || value === 0)
-    .map(([key, value]) => `${key}=${value}`)
-    .join('&')
-  return `${base}${title}?${args_str}`
-}
-
-function open_weather_one_call_get({
-  lat,
-  lon,
-  units = undefined,
-  lang = undefined,
-}) {
-  // TODO: implement caching for api calls. Consider node-cache.
-  // Make sure it supports disk caching since the timeout is around 10 minutes
-
-  const base_url = 'https://api.openweathermap.org/data/3.0/'
-  const options = {
-    ...{ lat, lon, units, lang },
-    ...{
-      appid: OPEN_WEATHER_APIKEY,
-      exclude: 'current,minutely,hourly,daily,alerts',
-    },
-  }
-  const url = build_url(base_url, 'onecall', options)
-  return axios.get(url).json()
-}
-
 /// Routes \\\
-export const router = express.Router()
+export const api_routes = express.Router()
 
-router.get('/', function (req, res) {
-  res.json(['Api not implemented'])
+// TODO: This is an example only replace with decided api
+api_routes.get('/weather/:zip', async function (req, res) {
+  try {
+    const { zip } = req.params
+    res.json(await openweathermap.weather({ zip }))
+  } catch (e) {
+    res.status(404).render('404', { message: e.message })
+  }
 })

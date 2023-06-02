@@ -1,7 +1,7 @@
 import express from 'express'
 import { model } from 'mongoose'
-export const router = express.Router()
+export const top_routes = express.Router()
 
-router.get('/', function (req, res) {
+top_routes.get('/', function (req, res) {
   res.render('home')
 })

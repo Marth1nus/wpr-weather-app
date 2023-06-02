@@ -54,3 +54,18 @@ export const LANGUAGES = {
   zh_tw: 'Chinese Traditional',
   zu: 'Zulu',
 }
+export const LANGUAGE_CODES = Object.fromEntries(
+  Object.entries(LANGUAGES).map(([key, value]) => [value, key])
+)
+
+export function validate_units(units = '') {
+  units = units.toLowerCase()
+  assert.ok(units.toUpperCase() in UNITS)
+  return units
+}
+
+export function validate_lang(lang = '') {
+  if (lang in LANGUAGE_CODES) lang = LANGUAGE_CODES[lang]
+  assert.ok(lang in LANGUAGES)
+  return lang
+}
