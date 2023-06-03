@@ -3,6 +3,11 @@ export const UNITS = {
   METRIC: 'metric',
   IMPERIAL: 'imperial',
 }
+export const UNITS_SYMBOLS = {
+  standard: 'k',
+  metric: 'C',
+  imperial: 'F',
+}
 export const LANGUAGES = {
   af: 'Afrikaans',
   al: 'Albanian',
@@ -58,14 +63,16 @@ export const LANGUAGE_CODES = Object.fromEntries(
   Object.entries(LANGUAGES).map(([key, value]) => [value, key])
 )
 
+import assert from 'assert'
+
 export function validate_units(units = '') {
   units = units.toLowerCase()
-  assert.ok(units.toUpperCase() in UNITS)
+  assert.ok(units.toUpperCase() in UNITS, `Invalid units: ${units}`)
   return units
 }
 
 export function validate_lang(lang = '') {
   if (lang in LANGUAGE_CODES) lang = LANGUAGE_CODES[lang]
-  assert.ok(lang in LANGUAGES)
+  assert.ok(lang in LANGUAGES, `Invalid language: ${lang}`)
   return lang
 }

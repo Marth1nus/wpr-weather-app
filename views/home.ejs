@@ -4,15 +4,16 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/style.css" />
     <%- include('./partials/title', { pageName:'Home' }) %>
   </head>
   <body>
-    <main id="app"></main>
+    <main id="app">
+      <div class="loading">
+        <div></div>
+        React loading
+      </div>
+    </main>
     <script src="/home.js"></script>
-    <form action="weather">
-      <label for="zipcode"></label>
-      <input type="text" name="zipcode" id="zipcode" />
-      <button type="submit">search</button>
-    </form>
   </body>
 </html>

@@ -1,22 +1,19 @@
 import express from 'express'
-import mongoose from 'mongoose'
-import { UNITS, LANGUAGES, LANGUAGE_CODES } from '../src/enums.mjs'
 import * as openweathermap from '../src/open-weather-map.mjs'
+import assert from 'assert'
+import { UNITS } from '../src/enums.mjs'
 
-const user = mongoose.model('user', user_schema)
-
-/// Routes \\\
 export const api_routes = express.Router()
 
-// TODO: This is an example only replace with decided api
-api_routes.get('/weather/:zip', async function (req, res) {
+api_routes.get('/weather', async function (req, res) {
   try {
-    const { zip } = req.params
-    const { city, country, list } = await openweathermap.weather({ zip })
-    res.json({ city, country, forecast: list })
+    const { zip, units = UNITS.METRIC } = req.query
+    assert.ok(zip, 'url args must contain zip')
+    const weather = await openweathermap.weather({ zip, units })
+    const forecast = await openweathermap.forecast({ zip, units, cnt: 7 })
+    res.json({ weather, forecast })
   } catch (e) {
-    res.status(404).json({ error: e.message })
+    const status = e.message.match(/not found$/) ? 404 : 500
+    res.status(status).json({ error: e.message })
   }
 })
-
-api_routes.get()

@@ -1,7 +1,6 @@
 import dotenv from 'dotenv'
 dotenv.config()
 
-import axios from 'axios'
 import { UNITS, LANGUAGES, validate_units, validate_lang } from './enums.mjs'
 import assert from 'assert'
 
@@ -43,13 +42,13 @@ export async function endpoint_data({
     [lat + lon > 0, q, id, zip].filter((v) => v).length === 1,
     `Invalid Selectors:\n\tInput object must contain exactly one of: (lat and lon), q, id, xor zip as selectors in additional to optional parameters\n\tNote lat,lon=0,0 is c considered invalid`
   )
-  assert.ok(zip && zip.match(/^\d{5},?\w*$/) === 1, `Invalid zipcode: ${zip}`)
+  assert.ok(zip && zip.match(/^[\d\w]+,\w+$/), `Invalid zipcode: ${zip}`)
   assert.ok(
     method in METHODS,
-    `Invalid Method: ${method}\nOptions were: ${Object.value(method)}`
+    `Invalid Method: ${method}\nOptions were: ${Object.values(method)}`
   )
   assert.ok(
-    interval in INTERVALS,
+    interval in INTERVALS || !interval,
     `Invalid interval: ${interval}\nOptions were: ${Object.values(INTERVALS)}`
   )
   lang = validate_lang(lang)
@@ -65,7 +64,10 @@ export async function endpoint_data({
   // TODO: result caching can be done from here
 
   // resolve request
-  return await axios.get(url).json()
+  const res = await fetch(url)
+  const json = await res.json()
+  assert.ok(res.status === 200, json.message)
+  return json
 }
 
 export async function weather({
