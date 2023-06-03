@@ -1,46 +1,20 @@
 import React, { useState } from 'react'
+import { UNITS } from '../enums.mjs'
+const units_values = Object.values(UNITS)
 
-function UnitsSelector() {
-  const [unit, setUnit] = useState('celsius')
-
-  const handleUnitChange = (event) => {
-    setUnit(event.target.value)
-  }
-
+function UnitsSelector({ units, setUnits }) {
   return (
-    <div>
-      <h3>Select Temperature Unit:</h3>
-      <label>
-        <input
-          type='radio'
-          value='celsius'
-          checked={unit === 'celsius'}
-          onChange={handleUnitChange}
-        />
-        Celsius
-      </label>
-
-      <label>
-        <input
-          type='radio'
-          value='fahrenheit'
-          checked={unit === 'fahrenheit'}
-          onChange={handleUnitChange}
-        />
-        Fahrenheit
-      </label>
-
-      <label>
-        <input
-          type='radio'
-          value='standard'
-          checked={unit === 'standard'}
-          onChange={handleUnitChange}
-        />
-        Standard
-      </label>
-
-      <p>Selected Unit: {unit}</p>
+    <div className='units-selector'>
+      <label>Units:</label>
+      {units_values.map((value) => (
+        <button
+          key={value}
+          onClick={(e) => setUnits(value)}
+          className={units === value ? 'selected' : 'deselected'}
+        >
+          {value}
+        </button>
+      ))}
     </div>
   )
 }
