@@ -1,8 +1,6 @@
 import dotenv from 'dotenv'
 dotenv.config()
 
-//console.log(process.env)
-
 import express from 'express'
 import { top_routes } from './routes/top.mjs'
 import { api_routes, db_connection } from './routes/api.mjs'

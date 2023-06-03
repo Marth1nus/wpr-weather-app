@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { createRoot } from 'react-dom/client'
 
+import UnitSelector from './components/units-selector'
+
 function App() {
   return (
     <>
-      <h1>hello</h1>
+      <UnitSelector></UnitSelector>
     </>
   )
 }
