@@ -2,6 +2,7 @@ const node_externals = require('webpack-node-externals')
 const path = require('path')
 
 const public_folder = path.resolve(__dirname, 'public')
+const mode = 'development'
 
 const wpr_weather_module = {
   rules: [
@@ -24,7 +25,17 @@ const client_config = {
     path: public_folder,
     filename: 'home.js',
   },
-  mode: 'development', // production
+  mode,
+  module: wpr_weather_module,
+}
+
+const search_client_config = {
+  entry: './src/search.js',
+  output: {
+    path: public_folder,
+    filename: 'search.js',
+  },
+  mode,
   module: wpr_weather_module,
 }
 
@@ -36,8 +47,8 @@ const server_config = {
   },
   externals: [node_externals()],
   target: 'node',
-  mode: 'development', // production
+  mode,
   module: wpr_weather_module,
 }
 
-module.exports = [client_config, server_config]
+module.exports = [search_client_config, client_config, server_config]

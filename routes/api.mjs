@@ -12,7 +12,7 @@ const openweathermap_get = (endpoint) =>
       assert.ok(zip, 'url args must contain zip={zipcode}')
       res.json(await endpoint({ zip, cnt, ...options }))
     } catch (e) {
-      const status = e.message.match(/not found$/) ? 404 : 500
+      const status = e.message.match(/not found/) ? 404 : 500
       res.status(status).json({ error: e.message })
     }
   }

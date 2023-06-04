@@ -19,4 +19,8 @@ app.use(express.urlencoded({ extended: true }))
 app.use('/', top_routes)
 app.use('/api', api_routes)
 
+app.get('*', function (req, res) {
+  res.status(404).render('404', { message: '' })
+})
+
 app.listen(NODE_PORT)

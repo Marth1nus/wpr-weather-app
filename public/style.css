@@ -1,3 +1,12 @@
+.add-zipcode {
+  border: 24px;
+  overflow: hidden;
+}
+
+.add-zipcode > * {
+  border-left: 1 px black;
+}
+
 .units-selector {
   display: flex;
   flex-direction: row;
@@ -12,6 +21,8 @@
 
   background-color: #a0a0a0;
   color: black;
+
+  height: min-content;
 }
 
 .units-selector > * {
@@ -63,6 +74,16 @@
 .weather-card > main {
   display: flex;
   overflow-x: scroll;
+}
+
+.weather-card > footer {
+  background-color: transparent;
+  top: 0;
+  right: 0;
+  z-index: 1;
+  height: min-content;
+  border-radius: 5px;
+  padding: 10px;
 }
 
 .weather-day-card {
@@ -143,4 +164,12 @@
   height: 100%;
   width: 100%;
   padding: 10px;
+}
+
+nav {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+  border-bottom: 1px solid black;
 }
