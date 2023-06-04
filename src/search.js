@@ -17,14 +17,10 @@ const root = createRoot(document.querySelector('#app'))
 root.render(<App />)
 
 function App() {
-  const [units, setUnits] = useState(UNITS.METRIC)
-  const [zip, setZip] = useState('')
-  const history = useHistory()
-  if (!zip) history.push('/search')
   return (
     <BrowserRouter>
       <Switch>
-        <Route path='/'>
+        <Route path='/search'>
           <Search />
         </Route>
         <Route path='/current-weather'>

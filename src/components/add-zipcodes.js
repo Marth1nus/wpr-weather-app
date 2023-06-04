@@ -21,7 +21,7 @@ function AddZipcode({ addZip, buttonText = 'Add' }) {
       <button
         onClick={function (event) {
           alert(
-            'search for you zipcode online and enter it into the text box. This means you can view you current location. '
+            'search for you zipcode online and enter it into the text box. This means you can view your current location. '
           )
         }}
       >

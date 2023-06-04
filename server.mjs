@@ -23,4 +23,10 @@ app.get('*', function (req, res) {
   res.status(404).render('404', { message: '' })
 })
 
-app.listen(NODE_PORT)
+app.listen(NODE_PORT, (err) => {
+  if (err) {
+    console.error(err)
+    process.exit(1)
+  }
+  console.log(`Listening on http://localhost:${NODE_PORT}`)
+})
