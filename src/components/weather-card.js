@@ -1,11 +1,36 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, Suspense, lazy } from 'react'
 import { UNITS_SYMBOLS } from '../enums.mjs'
 
-const loading = (
+const Loading = ({ children = 'Loading' }) => (
   <span className='loading'>
     <div />
-    Loading
+    {children}
   </span>
+)
+
+const ShowError = ({ children }) => (
+  <span className='error'>Error: {children}</span>
+)
+
+const ObjTable = ({ obj, tableClass = 'obj-table' }) => (
+  <table className={tableClass}>
+    <tbody>
+      {Object.entries(obj).map(([key, value]) => (
+        <tr key={key}>
+          <td>{key}</td>
+          <td>{value}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+)
+
+const OWMIcon = ({ icon, ...props }) => (
+  <img
+    src={`https://openweathermap.org/img/wn/${icon}@2x.png`}
+    alt={icon}
+    {...props}
+  />
 )
 
 function format_unit_function(units) {
@@ -13,78 +38,100 @@ function format_unit_function(units) {
   return (n) => `${n} ${suffix}`
 }
 
-function DayCard({ temp, weather }) {
+const weekdays = [
+  'Sunday',
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+  'Saturday',
+]
+function DayCard({ dt, main, weather, units }) {
+  const date = new Date(parseInt(dt))
+  const { icon, name, description } = weather[0]
+  const { temp_min, temp_max } = main
+  const format_units = format_unit_function(units)
   return (
-    <div className='weather-day-card'>
-      <img src={weather.icon} alt='Icon' />
-      <h6>{name}</h6>
-      <p>{line}</p>
-    </div>
+    <article className='weather-day-card'>
+      <OWMIcon icon={icon} />
+      <h3>{weekdays[date.getDay()]}</h3>
+      <p>
+        {date.getFullYear()}-{date.getMonth()}-{date.getDate()}{' '}
+      </p>
+      <p>{name}</p>
+      <ObjTable
+        obj={{
+          Min: format_units(temp_min),
+          Max: format_units(temp_max),
+        }}
+      />
+      <p>{description}</p>
+    </article>
   )
 }
 
 function WeatherCard({ zip, units }) {
-  const [info, setInfo] = useState(undefined)
-  async function fetch_info() {
-    const url = `/api/weather?zip=${zip}&units${units}`
-    try {
-      const res = await fetch(url)
-      const json = await res.json()
-      setInfo(json)
-    } catch (e) {
-      console.error(e)
-      setInfo({ error: e.message })
-    }
-  }
+  const [Header, setHeader] = useState(<Loading />)
+  const [Main, setMain] = useState(<Loading />)
 
   useEffect(() => {
-    fetch_info()
+    build()
   }, [units])
 
-  if (!info) return <div className='weather-card'>{loading}</div>
-  if ('error' in info)
-    return <div className='weather-card'>|Error: {info.error}!</div>
-  const format_units = format_unit_function(units)
-  const { weather, forecast } = info
-
   return (
-    <div className='weather-card'>
-      <header>
-        <h1>{weather.name}</h1>
-        <img
-          src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`}
-        />
-        <table>
-          <tbody>
-            {Object.entries({
-              Currently: format_units(weather.main.temp),
-              'Feels Like': format_units(weather.main.feels_like),
-              Min: format_units(weather.main.temp_min),
-              Max: format_units(weather.main.temp_max),
-              Humidity: `${weather.main.humidity} %`,
-              Pressure: `${weather.main.pressure} hPa`,
-            }).map(([key, value]) => (
-              <tr key={key}>
-                <td>{key}</td>
-                <td>{value}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        <p>{weather.weather[0].description}</p>
-      </header>
-      <main>
-        {[
-          ...Array(16).fill({
-            name: 'Monday',
-            icon: 'https://raw.githubusercontent.com/Makin-Things/weather-icons/master/animated/clear-day.svg',
-            line: format_units(5),
-          }),
-        ].map(({ name, icon, line }) => (
-          <DayCard name={name} icon={icon} line={line} />
-        ))}
-      </main>
-    </div>
+    <article className='weather-card'>
+      {Header}
+      {Main}
+    </article>
   )
+
+  async function build() {
+    const format_units = format_unit_function(units)
+    const url = (endpoint, suffix = '') =>
+      `/api/${endpoint}?zip=${zip}&units${units}${suffix}`
+    let res
+
+    res = await fetch(url('weather'))
+    res = await res.json()
+    if ('error' in res) {
+      setHeader(<ShowError>{res.error}</ShowError>)
+    } else {
+      const { name, weather, main } = res
+      const { icon, description } = weather[0]
+      setHeader(
+        <header>
+          <h1>{name}</h1>
+          <OWMIcon icon={icon} />
+          <ObjTable
+            obj={{
+              Currently: format_units(main.temp),
+              'Feels Like': format_units(main.feels_like),
+              Min: format_units(main.temp_min),
+              Max: format_units(main.temp_max),
+              Humidity: `${main.humidity} %`,
+              Pressure: `${main.pressure} hPa`,
+            }}
+          />
+          <p>{description}</p>
+        </header>
+      )
+    }
+
+    res = await fetch(url('forecast'))
+    res = await res.json()
+    if ('error' in res) {
+      setMain(<ShowError>{res.error}</ShowError>)
+    } else {
+      setMain(
+        <main>
+          {res.list.slice(0, 14).map((list) => (
+            <DayCard key={list.dt} units={units} {...list} />
+          ))}
+        </main>
+      )
+    }
+  }
 }
+
 export default WeatherCard

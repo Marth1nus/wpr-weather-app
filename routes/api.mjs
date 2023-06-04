@@ -5,15 +5,17 @@ import { UNITS } from '../src/enums.mjs'
 
 export const api_routes = express.Router()
 
-api_routes.get('/weather', async function (req, res) {
-  try {
-    const { zip, units = UNITS.METRIC } = req.query
-    assert.ok(zip, 'url args must contain zip')
-    const weather = await openweathermap.weather({ zip, units })
-    const forecast = await openweathermap.forecast({ zip, units, cnt: 7 })
-    res.json({ weather, forecast })
-  } catch (e) {
-    const status = e.message.match(/not found$/) ? 404 : 500
-    res.status(status).json({ error: e.message })
+const openweathermap_get = (endpoint) =>
+  async function (req, res) {
+    try {
+      const { zip, cnt = 7, ...options } = req.query
+      assert.ok(zip, 'url args must contain zip={zipcode}')
+      res.json(await endpoint({ zip, cnt, ...options }))
+    } catch (e) {
+      const status = e.message.match(/not found$/) ? 404 : 500
+      res.status(status).json({ error: e.message })
+    }
   }
-})
+
+api_routes.get('/weather', openweathermap_get(openweathermap.weather))
+api_routes.get('/forecast', openweathermap_get(openweathermap.forecast))
