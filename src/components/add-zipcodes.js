@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-function AddZipcode({ addZip }) {
+function AddZipcode({ addZip, buttonText = 'Add' }) {
   const [validated, setValidated] = useState(false)
   const [zipcode, setZipcode] = useState('')
 
@@ -10,14 +10,14 @@ function AddZipcode({ addZip }) {
         type='text'
         id='zipcode'
         name='zipcode'
-        placeholder='Add zipcode'
+        placeholder='Enter Zipcode'
         value={zipcode}
         onChange={handleChange}
         style={{
           border: validated || !zipcode ? 'none' : '1px solid reds',
         }}
       />
-      <input type='submit' value='Add' />
+      <input type='submit' value={buttonText} />
       <button
         onClick={function (event) {
           alert(

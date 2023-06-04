@@ -1,34 +1,62 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { createRoot } from 'react-dom/client'
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
+import {
+  useHistory,
+  useLocation,
+  BrowserRouter,
+  Route,
+  Switch,
+} from 'react-router-dom'
 
 import UnitSelector from './components/units-selector'
 import WeatherCard from './components/weather-card'
 import AddZipcode from './components/add-zipcodes'
 import { UNITS } from './enums.mjs'
 
-function Search() {
-  return <main></main>
-}
-
-function CurrentWeather() {
-  return <main></main>
-}
+const root = createRoot(document.querySelector('#app'))
+root.render(<App />)
 
 function App() {
+  const [units, setUnits] = useState(UNITS.METRIC)
+  const [zip, setZip] = useState('')
+  const history = useHistory()
+  if (!zip) history.push('/search')
   return (
-    <Router>
+    <BrowserRouter>
       <Switch>
-        <Route exact path='/search'>
+        <Route path='/'>
           <Search />
         </Route>
         <Route path='/current-weather'>
           <CurrentWeather />
         </Route>
       </Switch>
-    </Router>
+    </BrowserRouter>
   )
 }
 
-const root = createRoot(document.querySelector('#app'))
-root.render(<App />)
+function Search() {
+  const history = useHistory()
+  return (
+    <main>
+      <h1>Get Weather by zipcode</h1>
+      <p>enter a valid zipcode and see its weather</p>
+      <AddZipcode addZip={goZip} />
+    </main>
+  )
+
+  function goZip(zip) {
+    history.push('/current-weather', { zip: `${zip},za` })
+  }
+}
+
+function CurrentWeather() {
+  const { zip } = useLocation().state
+  const [units, setUnits] = useState(UNITS.METRIC)
+  return (
+    <main>
+      <UnitSelector units={units} setUnits={setUnits} />
+      <WeatherCard zip={zip} units={units} />
+    </main>
+  )
+}

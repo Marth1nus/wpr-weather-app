@@ -71,7 +71,7 @@ function DayCard({ dt, main, weather, units }) {
   )
 }
 
-function WeatherCard({ zip, units, removeSelf }) {
+function WeatherCard({ zip, units, removeSelf = undefined }) {
   const [Header, setHeader] = useState(<Loading />)
   const [Main, setMain] = useState(<Loading />)
 
@@ -83,9 +83,13 @@ function WeatherCard({ zip, units, removeSelf }) {
     <article className='weather-card'>
       {Header}
       {Main}
-      <footer>
-        <button onClick={(event) => removeSelf()}>❌</button>
-      </footer>
+      {removeSelf ? (
+        <footer>
+          <button onClick={(event) => removeSelf()}>❌</button>
+        </footer>
+      ) : (
+        ''
+      )}
     </article>
   )
 
