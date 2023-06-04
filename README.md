@@ -12,7 +12,8 @@ Or run `node server-compiled.js`
 Opening route '/' takes you to the demo page
 opening route /search lets you use the addZipcode component to redirect you to a page with just one weather card
 
-Known bugs:
+## Known bugs:
+
 weather cards use the dt property to get the time however despite openweathermap stating that it's a unix time integer js fails to properly convert it. Because of this all weather day cards show tuesday 1970...!?
 
 the /search route fails because react router is being difficult.
