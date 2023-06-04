@@ -20,7 +20,7 @@ function App() {
   return (
     <BrowserRouter>
       <Switch>
-        <Route path='/search'>
+        <Route path='/'>
           <Search />
         </Route>
         <Route path='/current-weather'>
