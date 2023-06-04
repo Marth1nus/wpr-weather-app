@@ -2,6 +2,13 @@
 
 WPR381 submission
 
+After cloning run `npm install`
+remember to make a `.env` file containing
+`OPENWEATHERMAP_APIKEY=
+NODE_PORT=`
+Then run `npm start` to start the server
+Or run `node server-compiled.js`
+
 Opening route '/' takes you to the demo page
 opening route /search lets you use the addZipcode component to redirect you to a page with just one weather card
 
